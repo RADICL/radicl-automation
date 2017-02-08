@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Simple tool to clone multiple Virtual Machines in vSphere
+"""Simple tool to clone multiple Virtual Machines in vSphere.
 
 Usage:
     clone_vms.py
-    clone_vms.py (-f | --file) FILE
-    clone_vms.py (-v, --version)
+    clone_vms.py -f FILE
+    clone_vms.py --version
     clone_vms.py (-h | --help)
 
 Options:
     -h, --help          Prints this page
-    -v, --version       Prints current version
+    --version           Prints current version
     -f, --file FILE     Name of JSON file with server connection and login information
 
 """
