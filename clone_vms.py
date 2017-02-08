@@ -79,8 +79,13 @@ while True:
 base_name = input("Base name for instances to be created: ")
 num_instances = int(input("Number of instances to be created: "))
 pool = None
-if prompt_y_n_question("Would you like to assign the new VMs to a resource pool? "):
+
+if prompt_y_n_question("Would you like to assign the new VMs to a specific resource pool? "):
     pool = input("Resource pool: ")
+else:
+    pool = server.get_pool().name
+    print("Proceeding with default pool {}".format(pool))
+
 
 # GO BABY GO
 print("Starting clones...")

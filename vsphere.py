@@ -131,7 +131,7 @@ class vSphere:
         else:
             return get_obj(self.content, [vim.Datastore], datastore_name)
 
-    def get_pool(self, pool_name):
+    def get_pool(self, pool_name=None):
         """
         Finds and returns the named resource pool
         :param pool_name: (Optional) Name of the resource pool [default: first resource pool found in the datacenter]
