@@ -5,7 +5,7 @@ if(sysadmin):
     automation = happiness
 
 # Requirements
-* Python 3 [Tested using 3.6] (2 support can be added if there's a need)
+* Python 3 (Tested using 3.6)
 * Network connection to a vSphere 6.0+ server
 
 ## Python Packages
@@ -19,3 +19,11 @@ git clone https://github.com/RADICL/radicl-automation.git
 cd ./radicl-automation
 pip3 install -r requirements.txt
 ```
+
+# Usage
+
+```bash
+python3 ./<tool>.py --help
+```
+
+
