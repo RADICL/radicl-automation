@@ -5,7 +5,7 @@ import logging
 from pyVmomi import vim
 from pyVmomi import vmodl
 
-from automation.utils import sizeof_fmt
+from utils import sizeof_fmt
 
 
 # From: various files in pyvmomi-community-samples
