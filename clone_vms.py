@@ -4,16 +4,15 @@
 """Simple tool to clone multiple Virtual Machines in vSphere
 
 Usage:
+    clone_vms.py
+    clone_vms.py (-f | --file) FILE
     clone_vms.py (-v, --version)
     clone_vms.py (-h | --help)
-    clone_vms.py (-f | --file) FILE
-    clone_vms.py (-i | --interactive)
 
 Options:
     -h, --help          Prints this page
     -v, --version       Prints current version
     -f, --file FILE     Name of JSON file with server connection and login information
-    -i, --interactive   Interactive entry of server information
 
 """
 
@@ -31,8 +30,15 @@ args = docopt(__doc__, version=__version__, help=True)
 
 # TODO: use six to allow python 2.7 to be used?
 server = None  # Suppress warnings (sigh)
+if args["--file"]:
+    from json import load
 
-if args["--interactive"]:
+    with open(args["--file"], "r") as login_file:
+        info = load(fp=login_file)
+
+    server = vSphere(datacenter=info["datacenter"], username=info["username"], password=info["password"],
+                     hostname=info["hostname"], port=info["port"], datastore=info["datastore"])
+else:
     from getpass import getpass
     print("Enter information to connect to vSphere environment")
     host = input("Hostname: ")
@@ -47,15 +53,6 @@ if args["--interactive"]:
                          hostname=host, port=port, datastore=datastore)
     else:
         server = vSphere(datacenter=datacenter, username=user, password=pswd, hostname=host, port=port)
-
-elif args["--file"]:
-    from json import load
-
-    with open(args["--file"], "r") as login_file:
-        info = load(fp=login_file)
-
-    server = vSphere(datacenter=info["datacenter"], username=info["username"], password=info["password"],
-                     hostname=info["hostname"], port=info["port"], datastore=info["datastore"])
 
 # this is the ugliest python i hath ever wroten since me early dayz as a nofice
 # Well, it isn't anymore. But the comment was funny so I'm leaving it in for you, the GitHub stalker
