@@ -1,27 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Destroy VMs and Folders in a vSphere environment.
+"""Power operations for Virtual Machines in vSphere.
 
 Usage:
-    destroy_vms.py
-    destroy_vms.py -f FILE
-    destroy_vms.py -f FILE --folder FOLDER
-    destroy_vms.py --version
-    destroy_vms.py (-h | --help)
+    vm_power.py
+    vm_power.py -f FILE
+    vm_power.py --version
+    vm_power.py (-h | --help)
 
 Options:
     -h, --help          Prints this page
     --version           Prints current version
     -f, --file FILE     Name of JSON file with server connection and login information
-    --folder FOLDER     Name of a folder to recursively destroy
 
 """
 
 from docopt import docopt
 
 from vsphere import vSphere
-from vsphere_utils import *
 from vm_utils import *
 from utils import *
 
@@ -55,39 +52,39 @@ else:
     else:
         server = vSphere(datacenter=datacenter, username=user, password=pswd, hostname=host, port=port)
 
-if prompt_y_n_question("Do you wish to destroy a folder and it's sub-trees? "):
+
+operation = input("Enter the power operation you wish to perform [on | off | reset | suspend]: ")
+guest_check = prompt_y_n_question("Do you wish to use guest power operations if VMware Tools is installed? ")
+guest_op = None
+if guest_check:
+    guest_op = input("What guest operation do you wish to be performed [shutdown | reboot | standby]: ")
+
+if prompt_y_n_question("Do you wish to do power operations on multiple VMs? "):
     while True:
-        folder_name = input("Name of folder to destroy: ")
+        folder_name = input("Name of folder which contains the VMs (NOT the path): ")
         folder = server.get_folder(folder_name=folder_name)  # find folder
         if folder:
             break
         else:
             print("Couldn't find a folder with name {}. Perhaps try another? ".format(folder_name))
 
-    print("Recursively destroying folder {}".format(folder.name))
-    destroy_everything(folder)
+    if prompt_y_n_question("Found {} VMs in folder {}. Do you wish to continue? ".format(len(list(folder.childEntity)),
+                                                                                         folder_name)):
+        for vm in folder.childEntity:
+            if guest_check and tools_status(vm):
+                change_guest_state(vm, guest_op)
+            else:
+                change_power_state(vm, operation)
 
-elif prompt_y_n_question("Do you wish to destroy all VMs in a folder? "):
-    while True:
-        folder_name = input("Name of folder: ")
-        folder = server.get_folder(folder_name=folder_name)  # find folder
-        if folder:
-            break
-        else:
-            print("Couldn't find a folder with name {}. Perhaps try another? ".format(folder_name))
-
-    print("Destroying all VMs in folder {}".format(folder_name))
-    for vm in folder.childEntity:
-        destroy_vm(vm)
 
 else:
     while True:
-        vm_name = input("Name of VM to destroy: ")
-        vm = server.get_vm(vm_name=vm_name)  # find folder
+        vm_name = input("Name of the VM to do power operation on: ")
+        vm = server.get_vm(vm_name=vm_name)  # find vm
         if vm:
             break
         else:
             print("Couldn't find a VM with name {}. Perhaps try another? ".format(vm_name))
 
-    print("Destroying VM with name {}".format(vm_name))
-    destroy_vm(vm)
+    print("Changing power state of VM {} to {}".format(vm_name, operation))
+    change_power_state(vm, operation)

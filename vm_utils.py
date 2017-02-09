@@ -75,16 +75,30 @@ def change_guest_state(vm, guest_state):
     :param guest_state: shutdown, reboot, or standby
     """
     logging.info("Changing guest power state of VM {0} to: '{1}'".format(vm.name, guest_state))
+    state = guest_state.lower()
     if vm.summary.guest.toolsStatus == "toolsNotInstalled":
         logging.error("Cannot change a VM's guest power state without VMware Tools!")
-    elif guest_state.lower() == "shutdown":
+    elif state is "shutdown" or state is "off":
         vm.ShutdownGuest()
-    elif guest_state.lower() == "reboot":
+    elif state is "reboot" or state is "reset":
         vm.RebootGuest()
-    elif guest_state.lower() == "standby":
+    elif state is "standby" or state is "suspend":
         vm.StandbyGuest()
     else:
         logging.error("Invalid guest_state argument!")
+
+
+def tools_status(vm):
+    """
+    Checks if VMware Tools is working on the VM
+    :param vm: vim.VirtualMachine
+    :return: If tools are working or not
+    """
+    tools = vm.summary.guest.toolsStatus
+    if tools is "toolsOK" or tools is "toolsOld":
+        return True
+    else:
+        return False
 
 
 def convert_to_template(vm):

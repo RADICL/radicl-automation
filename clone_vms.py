@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Simple tool to clone multiple Virtual Machines in vSphere.
+"""Clone multiple Virtual Machines in vSphere.
 
 Usage:
     clone_vms.py
@@ -19,8 +19,6 @@ Options:
 from docopt import docopt
 
 from vsphere import vSphere
-from network_utils import *
-from vsphere_utils import *
 from vm_utils import *
 from utils import *
 
