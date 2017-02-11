@@ -1,3 +1,5 @@
+DEPRECATED - GO HERE INSTEAD: https://github.com/GhostofGoes/cybersecurity-environment-automation
+
 # Overview
 Simple tools to make life in RADICL a little less frustrating and a little more automated.
 
